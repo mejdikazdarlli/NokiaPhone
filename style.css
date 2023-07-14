@@ -1,6 +1,6 @@
 @font-face {
   font-family: BebasNeue;
-  src: url('../fonts/BebasNeueBook.ttf');
+  src: url('https://mejdikazdarlli.github.io/NokiaPhone/fonts/BebasNeueBook.ttf');
   font-weight: normal;
   font-style: normal;
 }
@@ -53,13 +53,15 @@ body,html{
   left: 50%;
   top: 0%;
   transform: translateX(-50%);
-  width: 200px;
+  width: 100%;
   height: auto;
+  justify-content: center;
+  align-items: center
 }
 .code span{
   font-size: 30px;
   font-weight: 900;
-  color: red;
+  color: black;
 }
 .gunMenu{
   display: flex;

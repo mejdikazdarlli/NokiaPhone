@@ -23,8 +23,9 @@ let isSwiping = false;
 let TWEEN_DURATION = 200
 var screenShake = ScreenShake();
 let defaultGun = "M4A4"
+let soundurl = "sound/"+defaultGun+".mp3"
 let code = [];
-let winnerCode = "0000"
+let winnerCode = "0 0 0 0"
 let winnermsg = ":) Congratulation you are winner"
 let losermsg = ":( try again"
 if (
@@ -154,9 +155,10 @@ async function onDocumentMouseClick(event) {
         if (intersects.length > 0) {
             if(intersects[0].object.name==="glass-ext" || intersects[0].object.name==="3310" )
                 {
-                    const soundEffect = new Audio('sound/M4A1.mp3');
+                    console.log(soundurl)
+                    const soundEffect = new Audio(soundurl);
                     screenShake.shake( Viewer.camera, new THREE.Vector3(0.03,-0.03,0.03), 150 );
-    soundEffect.play();
+                    soundEffect.play();
                 }
             if (intersects[0].object.name.startsWith("btn")) {
                 btnPressed ()
@@ -168,7 +170,7 @@ async function onDocumentMouseClick(event) {
                 }
                 else
                 {
-                    if(document.querySelector(".code").children[0].innerHTML ===winnerCode)
+                    if(document.querySelector(".code").children[0].innerHTML ==winnerCode)
                     {
                         document.querySelector(".code").children[0].innerHTML = winnermsg
                     }
@@ -176,6 +178,7 @@ async function onDocumentMouseClick(event) {
                     {
                         document.querySelector(".code").children[0].innerHTML = losermsg
                     }
+                    code = []
                 }
                 //var screenNumbers = Viewer.scene.getObjectByName("numners", true);
                 //screenNumbers.visible = true
