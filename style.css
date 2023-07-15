@@ -38,7 +38,7 @@ body,html{
   top: 50%;
   transform: translate(-50%,-50%);
 }
-#target{
+#target,#explosion{
   display: block;
   width: 40px;
   height:auto;
@@ -46,6 +46,12 @@ body,html{
   position: fixed;
   transform: translate(-50%,-50%);
   pointer-events: none;
+}
+#explosion{
+  display: none;
+  width: 60px;
+  height:auto;
+  mix-blend-mode: screen;
 }
 .code{
   position: absolute;
@@ -113,7 +119,7 @@ body,html{
 #weapon_spiner{
   display: block;
   position: relative;
-  width: 10%;
+  width: 0%;
   height: 100%;
   background: rgb(255,188,0);
   background: -moz-linear-gradient(90deg, rgba(255,188,0,1) 0%, rgba(208,64,64,1) 100%);
