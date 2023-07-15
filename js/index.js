@@ -1,4 +1,4 @@
-import { MKviewer,LoadWeapon} from './MKViewer.js';
+import { MKviewer,LoadWeapon,action} from './MKViewer.js';
 import {ScreenShake } from './ScreenShake.js'
 import * as THREE from './THREE/three.module.js';
 import { TWEEN } from './THREE/tween.module.min.js';
@@ -26,8 +26,9 @@ let defaultGun = "M4A4"
 let soundurl = "sound/"+defaultGun+".mp3"
 let code = [];
 let winnerCode = "0 0 0 0"
-let winnermsg = ":) Congratulation you are winner"
-let losermsg = ":( try again"
+let winnermsg = "Congratulation !! you win"
+let losermsg = "try again"
+let sogliaMove = 0;
 if (
     /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|ipad|iris|kindle|Android|Silk|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(
         navigator.userAgent,
@@ -48,7 +49,7 @@ if (isMobile) {
         startY = event.pageY;
         isSwiping = false;
     }
-    _("MKViewer").onpointermove = function (event) {
+    _("MKViewer").onpointermove =async function (event) {
         if (firstTouch) {
             startX = event.pageX;
             startY = event.pageY;
@@ -58,7 +59,7 @@ if (isMobile) {
             const diffY = Math.abs(event.pageY - startY);
             if (diffX < delta && diffY < delta && sogliaMove > 2) {
                 // sogliaMove>2 means 2 frame still when isSwiping is true
-                onDocumentTouchClick(event); // for iOS  
+                await onDocumentMouseClick(event); // for iOS  
             }
         }
         isSwiping = true;
@@ -152,13 +153,28 @@ async function onDocumentMouseClick(event) {
         mouse.y = - ((event.clientY - rect.top) / (rect.bottom - rect.top)) * 2 + 1;
         raycaster.setFromCamera(mouse, Viewer.camera);
         intersects = raycaster.intersectObjects(Viewer.scene.children, true)
+         // Convert normalized device coordinates to world coordinates
+         const mouseWorld = new THREE.Vector3(mouse.x, mouse.y, 0).unproject(Viewer.camera);
+         const cameraPosition = Viewer.camera.position.clone();
+         const scalar = 200; // Adjust the scalar value as needed
+         const direction = cameraPosition.sub(mouseWorld).normalize().multiplyScalar(scalar);
+         //const direction = mouseWorld.sub(Viewer.camera.position).normalize();
+         let Weapon = Viewer.scene.getObjectByName(defaultGun)
+         const oppositeDirection = direction.negate();
+         Weapon.lookAt(oppositeDirection);
         if (intersects.length > 0) {
             if(intersects[0].object.name==="glass-ext" || intersects[0].object.name==="3310" )
                 {
-                    console.log(soundurl)
                     const soundEffect = new Audio(soundurl);
+                    console.log(soundurl)
                     screenShake.shake( Viewer.camera, new THREE.Vector3(0.03,-0.03,0.03), 150 );
                     soundEffect.play();
+                    action.play()
+                    setTimeout(() => {
+                    action.stop() 
+                    }, 200);
+                    // target.style.left = event.clientX + "px",
+                    // target.style.top = event.clientY + "px";
                 }
             if (intersects[0].object.name.startsWith("btn")) {
                 btnPressed ()
@@ -244,6 +260,7 @@ guns.forEach(gun => {
         let Zpos = this.dataset.posz
        await removeGun(gunName)
        await LoadWeapon(gunName+'.glb',Viewer.scene, Viewer.camera,scl,Xpos,Ypos,Zpos)
+       soundurl = "sound/"+gunName+".mp3"
     } 
 });
 async function removeGun()

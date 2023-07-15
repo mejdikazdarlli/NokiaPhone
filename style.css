@@ -1,6 +1,6 @@
 @font-face {
   font-family: BebasNeue;
-  src: url('https://mejdikazdarlli.github.io/NokiaPhone/fonts/BebasNeueBook.ttf');
+  src: url('fonts/BebasNeueBook.ttf');
   font-weight: normal;
   font-style: normal;
 }
@@ -24,7 +24,7 @@ body,html{
   z-index: 1;
     height: 100vh;
     width: 100vw;
-    background-color: rgb(243, 243, 243);
+    background-color: rgb(219, 219, 219);
     cursor: none;
 }
 #loader_spiner{
@@ -99,5 +99,38 @@ body,html{
   font-weight: 900;
   width: fit-content;
   padding: 0% 30%;
-  
+  white-space: nowrap;
+}
+#loader_Weapon{
+  display: block;
+  position: absolute;
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 6px;
+}
+#weapon_spiner{
+  display: block;
+  position: relative;
+  width: 10%;
+  height: 100%;
+  background: rgb(255,188,0);
+  background: -moz-linear-gradient(90deg, rgba(255,188,0,1) 0%, rgba(208,64,64,1) 100%);
+  background: -webkit-linear-gradient(90deg, rgba(255,188,0,1) 0%, rgba(208,64,64,1) 100%);
+  background: linear-gradient(90deg, rgba(255,188,0,1) 0%, rgba(208,64,64,1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffbc00",endColorstr="#d04040",GradientType=1);
+}
+
+@media only screen and (max-width: 600px) {
+  .gun img{
+    width: 60px;
+    height: auto;
+  }
+  .gun h1{
+    font-size:1.0rem;
+  }
+  #target{
+    display: none;
+  }
 }

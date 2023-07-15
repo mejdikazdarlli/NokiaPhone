@@ -49,7 +49,7 @@ export class MKviewer {
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(this.container.offsetWidth, this.container.offsetHeight);
         this.container.appendChild(this.renderer.domElement);
-        this.renderer.toneMappingExposure =1.0;
+        this.renderer.toneMappingExposure =3.0;
         this.renderer.outputEncoding = THREE.sRGBEncoding;
         this.renderer.physicallyCorrectLights = true;
         this.renderer.toneMapping = THREE.CustomToneMapping;
@@ -84,7 +84,7 @@ export class MKviewer {
  
         await LoadModel('3310.glb', this.scene,this.renderer);
         await LoadWeapon('M4A4.glb',this.scene, this.camera,0.3,0,-0.1,-1);
-        await loadEnvironmentHDR(this.renderer, this.scene, 'metal_02.hdr');
+        await loadEnvironmentHDR(this.renderer, this.scene, 'metal_03.hdr');
         this.orbit = new OrbitControls(this.camera, this.renderer.domElement);
         // this.orbit.minDistance=60;
         // this.orbit.maxDistance=60;
@@ -106,6 +106,10 @@ export class MKviewer {
         requestAnimationFrame(this.animate.bind(this));
         
         if (delta > interval) {
+            if(mixer)
+            {
+                mixer.update(delta)
+            }
             if(LoadedModel) {this.orbit.update();}
             this.renderer.clear();
             this.render();
@@ -122,27 +126,27 @@ export class MKviewer {
 }
 export let LoadedModel = false
 let interval = 1 / 25, delta = 0, clock = new THREE.Clock();
-var loader = new GLTFLoader( FNmanager());
+var loader = new GLTFLoader( );
 var loaderDRACO = new DRACOLoader();
 loaderDRACO.setDecoderPath('./js/decoder/');
 loader.setDRACOLoader(loaderDRACO);
 export async function LoadModel(model, _thisScene) {
-    _("loader_spiner").style.display = "block";
+    
     return new Promise((resolve, reject) => {
         loader.load( 'asset/' + model,
         async function (object) {
             var SceneGLB = object.scene;
             SceneGLB.name = String(model)
             SceneGLB.traverse(async function (child) {
-                // if(child.name==="numners")
-                // {child.visible= false}
             })
             _thisScene.add(SceneGLB)
             LoadedModel = true
         resolve()
+        _("loader_spiner").style.display = "none";
     }
         ,
         xhr => {
+            _("loader_spiner").style.display = "block";
           console.log(`Loading Model :  ${Math.floor((xhr.loaded / xhr.total) * 100)}%`);
         },
         err => {
@@ -151,21 +155,53 @@ export async function LoadModel(model, _thisScene) {
       );
     });
   }
-
+  let mixer;
+  export let action;
+  var  mouse = { x: 0, y: 0 };
 export async function LoadWeapon(model,_thisScene, _thisCamera,vecScale,vecPositionX,vecPositionY,vecPositionZ) {
-    _("loader_spiner").style.display = "block";
+    return new Promise((resolve, reject) => {
+        loader.load( 'asset/' + model,
+        async function (object) {
+            var Weapon = object.scene;
+            Weapon.name = String(model)
+            Weapon.scale.set(vecScale,vecScale,vecScale)
+            Weapon.traverse(async function (child) {
+                if(child.name===model)
+                {
+                    //child.material.envMapIntensity = 0.5
+                    child.position.set(vecPositionX,vecPositionY,vecPositionZ)
+                    child.lookAt(new THREE.Vector3(0,0,0))
+                    // const mouseWorld = new THREE.Vector3(mouse.x, mouse.y, 0).unproject(_thisCamera);
+                    // const cameraPosition =_thisCamera.position.clone();
+                    // const scalar = 200; // Adjust the scalar value as needed
+                    // const direction = cameraPosition.sub(mouseWorld).normalize().multiplyScalar(scalar);
+                    // child.lookAt(direction)
+                }
+            })
+            _thisCamera.add(Weapon)
+        
 
-    return loader.load('asset/' + model, function (object) {
-        var Weapon = object.scene;
-        Weapon.name = String(model)
-        Weapon.scale.set(vecScale,vecScale,vecScale)
-        Weapon.traverse(async function (child) {
-            if(child.name===model)
-           { child.position.set(vecPositionX,vecPositionY,vecPositionZ)   // 0,-0.1,-1
-            child.lookAt(new THREE.Vector3(0,0,0))}
-        })
-        _thisCamera.add(Weapon)
-    })
+            mixer = new THREE.AnimationMixer(Weapon)
+            const clips = object.animations;
+            clips.forEach(clip => {
+                action = mixer.clipAction(clip)
+            //action.play()
+           });
+            LoadedModel = true
+        resolve()
+        _("loader_Weapon").style.display = "none";
+    }
+        ,
+        xhr => {
+            _("loader_Weapon").style.display = "block";
+            _("weapon_spiner").style.width = `${Math.floor((xhr.loaded / xhr.total) * 100)}%`
+            console.log(`Loading Weapon :  ${Math.floor((xhr.loaded / xhr.total) * 100)}%`);
+        },
+        err => {
+          reject(new Error(err));
+        }
+      );
+    });
 }
 
 export function FNmanager() {
