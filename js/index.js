@@ -173,13 +173,16 @@ async function onDocumentMouseClick(event) {
                     screenShake.shake( Viewer.camera, new THREE.Vector3(0.03,-0.03,0.03), 150 );
                     soundEffect.play();
                     action.play()
+                    target.style.left = event.clientX + "px",
+                    target.style.top = event.clientY + "px";
+                    _("explosion").style.left = event.clientX + "px",
+                    _("explosion").style.top = event.clientY + "px";
                     _("explosion").style.display = "block"
                     setTimeout(() => {
                     action.stop() 
                     _("explosion").style.display = "none"
                     }, 200);
-                    // target.style.left = event.clientX + "px",
-                    // target.style.top = event.clientY + "px";
+                    
                 }
             if (intersects[0].object.name.startsWith("btn")) {
                 btnPressed ()
