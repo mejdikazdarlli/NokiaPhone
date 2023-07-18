@@ -13,6 +13,11 @@ body,html{
     font-weight: 300;
     user-select: none;
     font-family: BebasNeue;
+    background: rgb(181,200,207);
+    background: -moz-linear-gradient(180deg, rgba(219, 219, 219,1) 64%, rgb(51, 57, 63) 100%);
+    background: -webkit-linear-gradient(180deg, rgba(219, 219, 219,1) 64%, rgba(156, 188, 194,1) 100%);
+    background: linear-gradient(180deg, rgba(219, 219, 219,1) 64%, rgba(156, 188, 194,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#b5c8cf",endColorstr="#d7c0a5",GradientType=1);
   }
   * {
     margin: 0;
@@ -24,8 +29,6 @@ body,html{
   z-index: 1;
     height: 100vh;
     width: 100vw;
-    background-color: rgb(219, 219, 219);
-    cursor: none;
 }
 #loader_spiner{
   position: relative;
@@ -39,7 +42,7 @@ body,html{
   transform: translate(-50%,-50%);
 }
 #target,#explosion{
-  display: block;
+  display: none;
   width: 40px;
   height:auto;
   transition: all 100ms ease-out;
@@ -127,7 +130,38 @@ body,html{
   background: linear-gradient(90deg, rgba(255,188,0,1) 0%, rgba(208,64,64,1) 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffbc00",endColorstr="#d04040",GradientType=1);
 }
-
+nav{
+  display: flex;
+  position: absolute;
+  justify-content: space-between;
+  width: 100%;
+  padding: 1% 2%;
+}
+nav a {
+  text-decoration: none;
+  color: black;
+  font-weight: 900;
+  font-size: 20px;
+  padding: 0 0.2rem;
+  font-family: "Roboto", sans-serif;
+  cursor: pointer;
+}
+.titles{
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  align-items: center;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 20%;
+}
+.twoabout{
+  font-weight: 800;
+  font-size: 30px;
+  font-family: "Roboto", sans-serif;
+  text-align: center;
+  /* word-spacing: 10px; */
+}
 @media only screen and (max-width: 600px) {
   .gun img{
     width: 60px;
@@ -138,5 +172,13 @@ body,html{
   }
   #target{
     display: none;
+  }
+  nav a {
+    font-size:15px ;
+  }
+  .twoabout{
+    font-size: 17px;
+    width: 100%;
+    white-space: nowrap;
   }
 }
